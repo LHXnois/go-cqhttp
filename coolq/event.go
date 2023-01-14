@@ -243,13 +243,14 @@ func (bot *CQBot) guildChannelMessageRecalledEvent(c *client.QQClient, e *client
 	if channel == nil {
 		return
 	}
+	msgID := encodeGuildMessageID(e.GuildId, e.ChannelId, e.MessageId, message.SourceGuildChannel)
 	operator, err := c.GuildService.FetchGuildMemberProfileInfo(e.GuildId, e.OperatorId)
 	if err != nil {
 		log.Errorf("处理频道撤回事件时出现错误: 获取操作者资料时出现错误 %v", err)
-		return
+		log.Infof("用户 unknown(%v) 撤回了频道 %v(%v) 子频道 %v(%v) 的消息 %v", e.OperatorId, guild.GuildName, guild.GuildId, channel.ChannelName, channel.ChannelId, msgID)
+	} else {
+		log.Infof("用户 %v(%v) 撤回了频道 %v(%v) 子频道 %v(%v) 的消息 %v", operator.Nickname, operator.TinyId, guild.GuildName, guild.GuildId, channel.ChannelName, channel.ChannelId, msgID)
 	}
-	msgID := encodeGuildMessageID(e.GuildId, e.ChannelId, e.MessageId, message.SourceGuildChannel)
-	log.Infof("用户 %v(%v) 撤回了频道 %v(%v) 子频道 %v(%v) 的消息 %v", operator.Nickname, operator.TinyId, guild.GuildName, guild.GuildId, channel.ChannelName, channel.ChannelId, msgID)
 	bot.dispatchEvent("notice/guild_channel_recall", global.MSG{
 		"guild_id":     fU64(e.GuildId),
 		"channel_id":   fU64(e.ChannelId),
