@@ -132,6 +132,7 @@ func toElements(e []message.IMessageElement, source message.Source) (r []cqcode.
 		r = append(r, elem)
 	}
 	for i, elem := range e {
+		log.Infof("elem content: %+v", elem)
 		var m cqcode.Element
 		switch o := elem.(type) {
 		case *message.ReplyElement:
@@ -230,6 +231,24 @@ func toElements(e []message.IMessageElement, source message.Source) (r []cqcode.
 				Type: "image",
 				Data: data,
 			}
+			log.Infof("m content: %+v", m)
+		case *LocalImageElement:
+			data := pairs{
+				{K: "file", V: o.File},
+				{K: "url", V: o.URL},
+			}
+			switch {
+			case o.Flash:
+				data = append(data, pair{K: "type", V: "flash"})
+			case o.EffectID != 0:
+				data = append(data, pair{K: "type", V: "show"})
+				data = append(data, pair{K: "id", V: strconv.FormatInt(int64(o.EffectID), 10)})
+			}
+			m = cqcode.Element{
+				Type: "image",
+				Data: data,
+			}
+			log.Infof("m content: %+v", m)
 		case *message.FriendImageElement:
 			data := pairs{
 				{K: "file", V: hex.EncodeToString(o.Md5) + ".image"},
@@ -283,6 +302,7 @@ func toElements(e []message.IMessageElement, source message.Source) (r []cqcode.
 				},
 			}
 		default:
+			log.Infof("unknown type content: %v", o)
 			continue
 		}
 		r = append(r, m)

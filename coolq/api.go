@@ -1729,6 +1729,7 @@ func (bot *CQBot) CQGetGuildMessage(messageID string, noCache bool) global.MSG {
 				"nickname": channelMsgByDB.Attribute.SenderName,
 			}
 			m["message"] = ToFormattedMessage(bot.ConvertContentMessage(channelMsgByDB.Content, message.SourceGuildChannel), source)
+			log.Infof("msg content: %+v", m)
 		}
 	case message.SourceGuildDirect:
 		// todo(mrs4s): 支持 direct 消息
