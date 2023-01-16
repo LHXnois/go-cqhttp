@@ -364,6 +364,7 @@ func ToMessageContent(e []message.IMessageElement) (r []global.MSG) {
 				"data": data,
 			}
 		case *message.GuildImageElement:
+			log.Infof("save guild img: %+v", o)
 			m = global.MSG{
 				"type": "image",
 				"data": global.MSG{"file": hex.EncodeToString(o.Md5) + ".image", "url": o.Url},
@@ -703,12 +704,14 @@ func (bot *CQBot) ConvertObjectMessage(m gjson.Result, sourceType message.Source
 
 // ConvertContentMessage 将数据库用的 content 转换为消息元素数组
 func (bot *CQBot) ConvertContentMessage(content []global.MSG, sourceType message.SourceType) (r []message.IMessageElement) {
+	log.Infof("msg content: %+v", content)
 	for _, c := range content {
 		data := c["data"].(global.MSG)
 		switch c["type"] {
 		case "text":
 			r = append(r, message.NewText(data["text"].(string)))
 		case "image":
+			log.Infof("image data: %+v", data)
 			u, ok := data["url"]
 			d := make(map[string]string, 2)
 			if ok {
@@ -758,6 +761,7 @@ func (bot *CQBot) ConvertContentMessage(content []global.MSG, sourceType message
 			case *message.FriendImageElement:
 				img.Flash = flash
 			}
+			log.Infof("e content: %+v", e)
 			r = append(r, e)
 		case "at":
 			switch data["subType"].(string) {
