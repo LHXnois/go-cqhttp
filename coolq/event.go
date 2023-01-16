@@ -27,6 +27,7 @@ func ToFormattedMessage(e []message.IMessageElement, source message.Source) (r i
 	} else if base.PostFormat == "array" {
 		r = toElements(e, source)
 	}
+	log.Infof("FormattedMessage content: %+v", r)
 	return
 }
 

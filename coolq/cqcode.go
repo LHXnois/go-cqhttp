@@ -132,6 +132,7 @@ func toElements(e []message.IMessageElement, source message.Source) (r []cqcode.
 		r = append(r, elem)
 	}
 	for i, elem := range e {
+		log.Infof("elem content: %+v", elem)
 		var m cqcode.Element
 		switch o := elem.(type) {
 		case *message.ReplyElement:
@@ -230,6 +231,7 @@ func toElements(e []message.IMessageElement, source message.Source) (r []cqcode.
 				Type: "image",
 				Data: data,
 			}
+			log.Infof("m content: %+v", m)
 		case *message.FriendImageElement:
 			data := pairs{
 				{K: "file", V: hex.EncodeToString(o.Md5) + ".image"},
