@@ -211,6 +211,7 @@ func convertReactions(reactions []*message.GuildMessageEmojiReaction) (r []globa
 
 func toStringMessage(m []message.IMessageElement, source message.Source) string {
 	elems := toElements(m, source)
+	log.Infof("elems content: %+v", elems)
 	var sb strings.Builder
 	for _, elem := range elems {
 		elem.WriteCQCodeTo(&sb)
